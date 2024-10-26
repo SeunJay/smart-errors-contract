@@ -5,54 +5,40 @@ pragma solidity ^0.8.27;
 // import "hardhat/console.sol";
 
 contract SmartErrors {
-    uint256 public storedValue;
+     uint public balance;
     address public owner;
 
-    // Constructor: Sets the initial owner of the contract
-    constructor(uint256 _initialValue) {
+
+    // Constructor to set the contract owner
+    constructor() {
         owner = msg.sender;
-        storedValue = _initialValue;
     }
 
-    // Modifier to restrict access to the contract owner
+    // Modifier to restrict certain functions to the owner only
     modifier onlyOwner() {
-        require(msg.sender == owner, "Access denied: Only owner can call this function");
+        if (msg.sender != owner) {
+            revert("Only the contract owner can perform this action");
+        }
         _;
     }
 
-    // Function to update stored value with a require check
-    function updateValue(uint256 newValue) public onlyOwner {
-        // Require statement checks a condition and throws if it's false
-        require(newValue > 0, "New value must be greater than zero");
-
-        // Update the stored value
-        storedValue = newValue;
-
+    // Function using 'require' to check conditions before executing the logic
+    function deposit(uint amount) public {
+        require(amount > 0, "Deposit amount must be greater than zero");
+        balance += amount;
     }
 
-     function getStoredValue() public view onlyOwner returns(uint) {
-        return storedValue;
-    }
-
-    // Function that uses assert to check an invariant
-    function checkInvariant() public view returns (bool) {
-        // Assert is used for internal errors and should never fail if logic is correct
-        assert(storedValue > 0);
-
-        return true; // If this returns true, the invariant holds
-    }
-
-    // Function to demonstrate revert with a custom error message
-    function revertExample(uint256 input) public pure {
-        // Revert is used to manually trigger an error and rollback changes
-        if (input > 10) {
-            revert("Input value is too high: must be 10 or less");
+    // Function using 'assert' to check for invariants or internal errors
+    function withdraw(uint amount) public {
+        if (amount > balance) {
+            revert("Insufficient balance!");
         }
+        balance -= amount;
+        assert(balance >= 0); // Ensure balance doesn't go below zero
     }
 
-    // Function to transfer ownership with require check
-    function transferOwnership(address newOwner) public onlyOwner {
-        require(newOwner != address(0), "New owner cannot be the zero address");
-        owner = newOwner;
+    // A simple check to simulate an emergency condition
+    function checkBalanceStatus() public view {
+        assert(balance >= 0); 
     }
 }

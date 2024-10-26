@@ -4,9 +4,8 @@ import { ethers } from "hardhat";
 async function main() {
   // Get the contract to deploy
   const SmartErrors = await ethers.getContractFactory("SmartErrors");
-  const initialStoredValue = 0;
 
-  const smartErrors = await SmartErrors.deploy(initialStoredValue);
+  const smartErrors = await SmartErrors.deploy();
 
   await smartErrors.deploymentTransaction();
   const address = await smartErrors.getAddress();

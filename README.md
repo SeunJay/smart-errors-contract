@@ -19,40 +19,37 @@ Once you are on the Remix website, create a new file by clicking on the "+" icon
 pragma solidity ^0.8.0;
 
 contract SmartErrors {
-    uint256 public storedValue;
+     uint public balance;
     address public owner;
 
-    constructor(uint256 _initialValue) {
+
+    constructor() {
         owner = msg.sender;
-        storedValue = _initialValue;
     }
 
     modifier onlyOwner() {
-        require(msg.sender == owner, "Access denied: Only owner can call this function");
+        if (msg.sender != owner) {
+            revert("Only the contract owner can perform this action");
+        }
         _;
     }
 
-    function updateStoredValue(uint256 newValue) public onlyOwner {
-        require(newValue > 0, "New value must be greater than zero");
-
-        storedValue = newValue;
-
+   
+    function deposit(uint amount) public {
+        require(amount > 0, "Deposit amount must be greater than zero");
+        balance += amount;
     }
 
-     function getStoredValue() public view onlyOwner returns(uint) {
-        return storedValue;
-    }
-
-    function isStoredValuePositive() public view returns (bool) {
-        assert(storedValue > 0);
-
-        return true;
-    }
-
-    function isAboveThreshold(uint256 input) public pure {
-        if (input > 10) {
-            revert("Input value is too high: must be 10 or less");
+    function withdraw(uint amount) public {
+        if (amount > balance) {
+            revert("Insufficient balance!");
         }
+        balance -= amount;
+        assert(balance >= 0);
+    }
+
+    function checkBalanceStatus() public view {
+        assert(balance >= 0);
     }
 }
 
