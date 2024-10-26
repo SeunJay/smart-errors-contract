@@ -67,7 +67,7 @@ Oluwaseun Jayeoba
 ## Loom(video) walkthrough
 
 ```bash
-https://www.loom.com/share/1a88428ad6024f32ab3af3353e9458b7
+https://www.loom.com/share/cfbdeaf2f93f4fd88b43d9b89e22b1c6
 ```
 
 ## License
